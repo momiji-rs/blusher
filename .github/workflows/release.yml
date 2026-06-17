@@ -54,6 +54,11 @@ jobs:
         with:
           platform: ${{ matrix.platform }}
           ruby-versions: "3.0,3.1,3.2,3.3,3.4"
+          # carmine is edition 2024 (needs Rust >= 1.85) and the lockfile is v4;
+          # force a modern toolchain inside the rb-sys-dock container, whose
+          # default is too old to understand either.
+          env: |
+            RUST_TOOLCHAIN=1.85.0
       - uses: actions/upload-artifact@v4
         with:
           name: cross-gem-${{ matrix.platform }}
@@ -78,6 +83,10 @@ jobs:
 
   publish:
     needs: [cross-gem, source-gem]
+    # Ship as long as the source gem built — it installs everywhere via extconf.
+    # Precompiled platform gems are an optimization; don't block the release if
+    # a cross-compile target has trouble (they just won't be in this version).
+    if: ${{ always() && needs.source-gem.result == 'success' }}
     runs-on: ubuntu-latest
     environment: rubygems
     permissions:
