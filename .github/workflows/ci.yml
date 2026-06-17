@@ -1,0 +1,38 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oxidize-rb/actions/setup-ruby-and-rust@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+          cargo-cache: true
+
+      - name: Compile the extension (against published carmine)
+        run: bundle exec rake compile
+
+      - name: Smoke test (fused HTML path)
+        run: |
+          ruby -Ilib -e '
+            require "blusher"
+            raise "magnus ext not loaded (backend=#{Blusher::Native.backend})" unless Blusher::Native.backend == :ext
+            html = Rouge.highlight(%({"a": 1}), "json", "html")
+            raise "no spans in output: #{html.inspect}" unless html.include?("<span class=")
+            puts "smoke OK — backend=#{Blusher::Native.backend}"
+            puts html
+          '
+
+      - name: Rouge lexer spec suite (zero-divergence gate)
+        run: |
+          git clone --depth 1 --branch v5.0.0 https://github.com/rouge-ruby/rouge /tmp/rouge
+          (cd /tmp/rouge && bundle install --quiet)
+          cd /tmp/rouge && RUBYLIB="$GITHUB_WORKSPACE/lib" bundle exec ruby -Ilib -Ispec \
+            -e 'require "spec_helper"; require "blusher"; Dir["./spec/lexers/*_spec.rb"].sort.each { |f| require f }'

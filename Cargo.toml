@@ -1,0 +1,6 @@
+# Workspace root for the gem's native extension. rb-sys/rake-compiler runs
+# `cargo metadata` from here to discover the `blusher` crate in ext/blusher,
+# and a committed Cargo.lock makes install-time builds reproducible.
+[workspace]
+members = ["ext/blusher"]
+resolver = "2"

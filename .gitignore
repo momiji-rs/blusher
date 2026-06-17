@@ -1,0 +1,13 @@
+# Compiled extension, staged by `rake compile` / built at `gem install`.
+/lib/blusher/blusher.bundle
+/lib/blusher/blusher.so
+/lib/blusher/blusher.dylib
+# carmine-ffi cdylib fallback (staged into ext/)
+/ext/*.dylib
+/ext/*.so
+# rb-sys / rake-compiler / cargo build trees
+/tmp/
+/target/
+/ext/blusher/target/
+/*.gem
+/Gemfile.lock
