@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2
+
+- Fix loading the precompiled gems: the native extension finder now checks the
+  per-Ruby-ABI path (`lib/blusher/<X.Y>/blusher.<dlext>`) that rake-compiler
+  uses for fat gems. (0.1.1's precompiled platform gems raised LoadError on
+  require; the source gem was unaffected.)
+
 ## 0.1.1
 
 - Ship **precompiled native gems** for the common platforms (linux x86_64/aarch64
