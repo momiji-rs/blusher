@@ -21,7 +21,7 @@ jobs:
 
       - name: Smoke test (fused HTML path)
         run: |
-          ruby -Ilib -e '
+          bundle exec ruby -Ilib -e '
             require "blusher"
             raise "magnus ext not loaded (backend=#{Blusher::Native.backend})" unless Blusher::Native.backend == :ext
             html = Rouge.highlight(%({"a": 1}), "json", "html")
