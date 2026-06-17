@@ -1,6 +1,13 @@
 # Changelog
 
-## 0.1.0 (unreleased)
+## 0.1.1
+
+- Ship **precompiled native gems** for the common platforms (linux x86_64/aarch64
+  incl. musl, darwin x86_64/arm64, windows x64-mingw-ucrt) via rb-sys-dock, so
+  `gem install blusher` needs no Rust toolchain. The source gem remains as a
+  fallback for other platforms (compiles the extension on install).
+
+## 0.1.0
 
 Initial release.
 
